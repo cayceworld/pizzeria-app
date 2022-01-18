@@ -263,7 +263,7 @@
     addToCart() {
       const thisProduct = this;
       thisProduct.prepareCartProduct();
-      app.cart.add(thisProduct);
+      app.cart.add(thisProduct.prepareCartProduct());
     }
     prepareCartProduct() {
       const thisProduct = this;
