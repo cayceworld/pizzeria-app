@@ -249,7 +249,8 @@
       //console.log('price:', price);
       //console.log(thisProduct.amountWidget.value);
       // update calculated price in the HTML
-      thisProduct.priceElem.innerHTML = price;
+
+      thisProduct.priceElem.innerHTML = thisProduct.priceSum;
       //console.log(price);
       //console.log('price:', thisProduct.priceSum);
     }
@@ -277,7 +278,7 @@
         params: {}
       };
       productSummary.params = thisProduct.prepareCartProductParams();
-      console.log('product Summary:', productSummary);
+      //console.log('product Summary:', productSummary);
       return productSummary;
     }
     prepareCartProductParams() {
@@ -316,6 +317,7 @@
       return params;
 
     }
+
   }
   class AmountWidget {
     constructor(element) {
@@ -370,19 +372,23 @@
     announce() {
       const thisWidget = this;
 
-      const event = new Event('updated');
+      const event = new CustomEvent('updated', {
+        bubbles: true
+      });
       thisWidget.element.dispatchEvent(event);
     }
 
 
   }
+
   class Cart {
     constructor(element) {
       const thisCart = this;
       thisCart.products = [];
-      
+
       thisCart.getElements(element);
       thisCart.initActions();
+      //thisCart.update();
 
       //console.log('new Cart', thisCart);
     }
@@ -395,29 +401,156 @@
       //console.log(thisCart.dom.wrapper);
       thisCart.dom.toggleTrigger = document.querySelector(select.cart.toggleTrigger);
       //console.log(thisCart.dom.toggleTrigger);
+      thisCart.dom.deliveryFee = document.querySelector(select.cart.deliveryFee);
+      thisCart.dom.subtotalPrice = document.querySelector(select.cart.subtotalPrice);
+      thisCart.dom.totalPrice = document.querySelectorAll(select.cart.totalPrice);
+      thisCart.dom.totalNumber = document.querySelector(select.cart.totalNumber);
     }
     initActions() {
       const thisCart = this;
       thisCart.dom.toggleTrigger.addEventListener('click', function (event) {
-
+        
         event.preventDefault();
         thisCart.dom.wrapper.classList.toggle(classNames.cart.wrapperActive);
 
       });
+      thisCart.dom.productList.addEventListener('updated', function(){
+        thisCart.update();
+      } );
+      thisCart.dom.productList.addEventListener('remove', function(event){
+        console.log('remove');
+        thisCart.remove(event.detail.cartProduct);
+      } );
 
     }
     add(menuProduct) {
       const thisCart = this;
       /* generate HTML based on temlate */
       const generatedHTML = templates.cartProduct(menuProduct);
-      console.log(generatedHTML);
+      //console.log(generatedHTML);
 
       /* create element using utils.createElementFromHTML */
       const generatedDOM = utils.createDOMFromHTML(generatedHTML);
-      console.log(generatedDOM);
-      
+      //console.log(generatedDOM);
+
       /* add element to cart */
       thisCart.dom.productList.appendChild(generatedDOM);
+
+      thisCart.products.push(new CartProduct(menuProduct, generatedDOM));
+      console.log('thisCart.products', thisCart.products);
+      thisCart.update();
+    }
+    update() {
+      const thisCart = this;
+
+      thisCart.deliveryFee = 0;
+      thisCart.totalNumber = 0;
+      thisCart.subtotalPrice = 0;
+
+      for (let product of thisCart.products) {
+        thisCart.totalNumber += product.amount;
+        thisCart.subtotalPrice += product.price;
+
+      }
+      if (thisCart.totalNumber != 0) {
+        thisCart.deliveryFee = 20;
+
+      }
+      
+      for ( let totalPrice of thisCart.dom.totalPrice ){
+        totalPrice.innerHTML = thisCart.subtotalPrice + thisCart.deliveryFee;
+      }
+      
+      //thisCart.totalPrice =  thisCart.subtotalPrice + thisCart.deliveryFee;
+
+
+
+      thisCart.dom.deliveryFee.innerHTML = thisCart.deliveryFee;
+      thisCart.dom.totalNumber.innerHTML = thisCart.totalNumber;
+      thisCart.dom.subtotalPrice.innerHTML = thisCart.subtotalPrice;
+      thisCart.dom.totalPrice.innerHTML = thisCart.totalPrice;
+      
+      
+      console.log('delivety:', thisCart.deliveryFee);
+      console.log('amount:', thisCart.totalNumber);
+      console.log('subtotal price', thisCart.subtotalPrice);
+      console.log('total price', thisCart.totalPrice);
+      console.log('total price', thisCart.dom.totalPrice);
+    }
+    remove(cartProduct){
+      const thisCart = this;
+      thisCart.products = thisCart.products.filter(product => product !== cartProduct);
+      cartProduct.dom.wrapper.remove();
+
+
+      thisCart.update();
+    }
+
+  }
+  class CartProduct {
+    constructor(menuProduct, element) {
+      const thisCartProduct = this;
+
+      thisCartProduct.id = menuProduct.id;
+      thisCartProduct.name = menuProduct.name;
+      thisCartProduct.amount = menuProduct.amount;
+      thisCartProduct.priceSingle = menuProduct.priceSingle;
+      thisCartProduct.price = menuProduct.price;
+
+      thisCartProduct.getElements(element);
+      thisCartProduct.initAmountWidget();
+      thisCartProduct.initActions();
+
+      console.log(menuProduct);
+      console.log('NEWthisCartProduct:', thisCartProduct);
+    }
+
+    getElements(element) {
+      const thisCartProduct = this;
+      thisCartProduct.dom = {};
+      thisCartProduct.dom.wrapper = element;
+      thisCartProduct.dom.amountWidget = element.querySelector(select.cartProduct.amountWidget);
+      thisCartProduct.dom.price = element.querySelector(select.cartProduct.price);
+      thisCartProduct.dom.edit = element.querySelector(select.cartProduct.edit);
+      thisCartProduct.dom.remove = element.querySelector(select.cartProduct.remove);
+    }
+    initAmountWidget() {
+      const thisCartProduct = this;
+      thisCartProduct.amountWidget = new AmountWidget(thisCartProduct.dom.amountWidget);
+      thisCartProduct.dom.amountWidget.addEventListener('updated', function () {
+        thisCartProduct.amount = thisCartProduct.amountWidget.value;
+        thisCartProduct.price = thisCartProduct.priceSingle * thisCartProduct.amount;
+        thisCartProduct.dom.price.innerHTML = thisCartProduct.price;
+      });
+
+    }
+    remove(){
+      const thisCartProduct = this;
+
+      const event = new CustomEvent ('remove',{
+        bubbles: true,
+        detail:{
+          cartProduct: thisCartProduct,
+        },
+      });
+      thisCartProduct.dom.wrapper.dispatchEvent(event);
+      console.log('remove');
+      //console.log(thisCartProduct.remove());
+      console.log(event.detail.cartProduct);
+      //return event.detail.cartProduct;
+      
+      
+    }
+    initActions(){
+      const thisCartProduct = this; 
+
+      thisCartProduct.dom.edit.addEventListener('click', function(event){
+        event.preventDefault();
+      });
+      thisCartProduct.dom.remove.addEventListener('click', function(event){
+        event.preventDefault();
+        thisCartProduct.remove();
+      });
 
     }
   }
