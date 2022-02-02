@@ -191,7 +191,9 @@ class Product {
       detail:{
         product: productCart, 
       }
+      
     });
+
     thisProduct.element.dispatchEvent(event);
   }
   prepareCartProduct() {

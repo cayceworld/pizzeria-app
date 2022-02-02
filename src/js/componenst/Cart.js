@@ -8,6 +8,7 @@ class Cart {
     console.log(thisCart.products);
     thisCart.getElements(element);
     thisCart.initActions();
+
     //thisCart.update();
 
     //console.log('new Cart', thisCart);
@@ -97,6 +98,7 @@ class Cart {
     thisCart.dom.deliveryFee.innerHTML = thisCart.deliveryFee;
     thisCart.dom.totalNumber.innerHTML = thisCart.totalNumber;
     thisCart.dom.subtotalPrice.innerHTML = thisCart.subtotalPrice;
+    thisCart.dom.amount = 
     thisCart.totalPrice = thisCart.subtotalPrice + thisCart.deliveryFee;
     
     
