@@ -44,6 +44,12 @@ export const select = {
     peopleAmount: '.people-amount',
     hoursAmount: '.hours-amount',
     tables: '.floor-plan .table',
+    table: '.table',
+    floorPlan: '.floor-plan',
+    submit: '.booking-form [type="submit"]',
+    phone: '.booking-form [name="phone"]',
+    address: '.booking-form [name="address"]',
+    starters: '.booking-form [name="starter"]',
   },
   nav: {
     links: '.main-nav a',
@@ -82,6 +88,7 @@ export const classNames = {
   booking: {
     loading: 'loading',
     tableBooked: 'booked',
+    tableSelect: 'selected',
   },
   nav: {
     active: 'active',
@@ -107,8 +114,8 @@ export const settings = {
     products: 'products',
     orders: 'orders',
     // CODE ADDED START
-    booking: 'booking',
-    event: 'event',
+    bookings: 'bookings',
+    events: 'events',
     dateStartParamKey: 'date_gte',
     dateEndParamKey: 'date_lte',
     notRepeatParam: 'repeat=false',

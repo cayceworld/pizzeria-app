@@ -133,6 +133,7 @@ class Cart {
     };
     for(let prod of thisCart.products) {
       payload.products.push(prod.getData());
+      console.log(prod);
     }
     console.log(payload);
     console.log(url);

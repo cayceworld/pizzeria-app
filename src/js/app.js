@@ -110,7 +110,7 @@ const app = {
     const thisApp = this;
 
     thisApp.widgetWraper = document.querySelector(select.containerOf.booking);
-    //console.log(thisApp.widgetWraper);
+    console.log(thisApp.widgetWraper);
     thisApp.booking = new Booking(thisApp.widgetWraper);
   },
   init: function () {
