@@ -2,7 +2,7 @@ import { settings, select, classNames } from './settings.js';
 import Product from './componenst/Product.js';
 import Cart from './componenst/Cart.js';
 import Booking from './componenst/Booking.js';
-
+import Home from './componenst/Home.js';
 
 
 
@@ -18,7 +18,7 @@ const app = {
     let pageMatchingHash = thisApp.pages[0].id;
 
     for (let page of thisApp.pages) {
-      if(page.id == idFromHash){
+      if (page.id == idFromHash) {
         pageMatchingHash = page.id;
         break;
       }
@@ -106,12 +106,19 @@ const app = {
       //app.cart.add(thisProduct.prepareCartProduct());
     });
   },
-  initBooking: function(){
+  initBooking: function () {
     const thisApp = this;
 
     thisApp.widgetWraper = document.querySelector(select.containerOf.booking);
     console.log(thisApp.widgetWraper);
     thisApp.booking = new Booking(thisApp.widgetWraper);
+  },
+  initHome: function () {
+    const thisApp = this;
+
+    thisApp.homeWrapper = document.querySelector(select.containerOf.home);
+    console.log(thisApp.homeWrapper);
+    thisApp.booking = new Home(thisApp.homeWrapper);
   },
   init: function () {
     const thisApp = this;
@@ -126,6 +133,7 @@ const app = {
 
     thisApp.initCart();
     thisApp.initBooking();
+    thisApp.initHome();
     //console.log(this.initMenu);
   },
 
