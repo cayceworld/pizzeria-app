@@ -9,11 +9,10 @@ import Home from './componenst/Home.js';
 const app = {
   ininPages: function () {
     const thisApp = this;
-
+    thisApp.homeOrder = document.querySelector(select.nav.homeOrder);
     thisApp.pages = document.querySelector(select.containerOf.pages).children;
     thisApp.navLinks = document.querySelectorAll(select.nav.links);
     const idFromHash = window.location.hash.replace('#/', '');
-
 
     let pageMatchingHash = thisApp.pages[0].id;
 
@@ -110,14 +109,14 @@ const app = {
     const thisApp = this;
 
     thisApp.widgetWraper = document.querySelector(select.containerOf.booking);
-    console.log(thisApp.widgetWraper);
+    //console.log(thisApp.widgetWraper);
     thisApp.booking = new Booking(thisApp.widgetWraper);
   },
   initHome: function () {
     const thisApp = this;
 
     thisApp.homeWrapper = document.querySelector(select.containerOf.home);
-    console.log(thisApp.homeWrapper);
+    //console.log(thisApp.homeWrapper);
     thisApp.booking = new Home(thisApp.homeWrapper);
   },
   init: function () {

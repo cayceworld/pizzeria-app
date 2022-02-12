@@ -1,20 +1,21 @@
-import { templates } from './../settings.js';
+import { templates, select, classNames } from './../settings.js';
 class Home {
   constructor(element) {
     const thisHome = this;
 
     thisHome.render(element);
     thisHome.initWidget();
+    thisHome.initLink();
   }
   render(element) {
     const thisHome = this;
 
     const generateHTML = templates.homePage();
 
-
     thisHome.dom = {};
     thisHome.dom.wrapper = element;
     thisHome.dom.wrapper.innerHTML = generateHTML;
+
   }
   initWidget() {
     // eslint-disable-next-line
@@ -24,18 +25,49 @@ class Home {
     var flkty = new Flickity(elem, {
       // options
       cellAlign: 'left',
-      contain: true
+      contain: true,
+      autoPlay: true,
+      adaptiveHeight: true,
+      prevNextButtons: false,
+      draggable: '>1',
     });
+  }
+  initLink() {
+    const thisHome = this;
 
-    // element argument can be a selector string
-    //   for an individual element
-    // eslint-disable-next-line
-    var flkty = new Flickity('.main-carousel', {
-      // options
-    });
+    thisHome.homeLinks = document.querySelectorAll(select.nav.homeLinks);
+    thisHome.pages = document.querySelector(select.containerOf.pages).children;
+    thisHome.navLinks = document.querySelectorAll(select.nav.links);
+    //console.log(thisHome.homeLinks);
+
+    for (let link of thisHome.homeLinks) {
+      // console.log(link);
+      link.addEventListener('click', function (event) {
+        event.preventDefault;
+
+        const clickedElement = this;
+        const id = clickedElement.getAttribute('href');
+        //console.log(id);
+
+        thisHome.activatePage(id);
+      });
+    }
+  }
+  activatePage(pageId) {
+    const thisHome = this;
+
+    for (let page of thisHome.pages) {
+      page.classList.toggle(classNames.pages.active, page.id == pageId);
+    }
 
 
+    for (let link of thisHome.navLinks) {
+      link.classList.toggle(
+        classNames.nav.active,
+        link.getAttribute('href') == '#' + pageId
+      );
 
+    }
   }
 }
 export default Home;

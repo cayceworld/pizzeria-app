@@ -56,6 +56,7 @@ export const select = {
   },
   nav: {
     links: '.main-nav a',
+    homeLinks: '.box',
   },
   // CODE ADDED END
   cart: {
@@ -136,8 +137,7 @@ export const settings = {
   },
 // CODE ADDED END
 };
-console.log(select.templateOf.bookingWidget);
-console.log(select.templateOf.homePage);
+
 export const templates = {
   menuProduct: Handlebars.compile(document.querySelector(select.templateOf.menuProduct).innerHTML),
   
